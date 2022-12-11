@@ -1,15 +1,15 @@
 //go:build unit
 
-package src_test
+package domain_test
 
 import (
 	"github.com/mikejeuga/bday/specifications"
-	"github.com/mikejeuga/bday/src"
+	"github.com/mikejeuga/bday/src/domain"
 	"testing"
 )
 
 func TestService(t *testing.T) {
-	service := src.NewService()
+	service := domain.NewService()
 	birthdaySpec := specifications.NewGreetBirthday(service)
 	birthdaySpec.SendGreetings(t)
 }

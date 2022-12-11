@@ -22,29 +22,33 @@ func NewGreetBirthday(birthdayGreeter BirthdayGreeter) *GreetBirthday {
 
 func (g *GreetBirthday) SendGreetings(t *testing.T) {
 	s := testcase.NewSpec(t)
-	ctx := testcase.Let(s, func(t *testcase.T) context.Context {
-		return context.Background()
-	})
 
-	today := testcase.Let[time.Time](s, nil)
-
-	people := testcase.Let(s, func(t *testcase.T) []models.Person {
-		jeffGreen := models.NewPerson("Jeff", "Green", models.DoB{
-			Day:   4,
-			Month: time.December,
-			Year:  1999,
+	var (
+		ctx = testcase.Let(s, func(t *testcase.T) context.Context {
+			return context.Background()
 		})
+		today = testcase.Let[time.Time](s, func(t *testcase.T) time.Time {
+			return time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC)
+		})
+		people = testcase.Let(s, func(t *testcase.T) []models.Person {
+			return []models.Person{}
+		})
+	)
 
-		return []models.Person{jeffGreen}
-	})
 	act := func(t *testcase.T) []models.Person {
 		return g.GreetBirthday(ctx.Get(t), people.Get(t), today.Get(t))
 	}
+
 	s.Describe(".GreetBirthday", func(s *testcase.Spec) {
 		s.When("people in the list have their birthday today,", func(s *testcase.Spec) {
+			jeffGreen := models.NewPerson("Jeff", "Green", models.DoB{
+				Day:   4,
+				Month: time.December,
+				Year:  1999,
+			})
 
 			s.Before(func(t *testcase.T) {
-				today.Set(t, time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC))
+				people.Set(t, []models.Person{jeffGreen})
 			})
 
 			s.Then("they are selected to receive a Happy Birthday message.", func(t *testcase.T) {
@@ -59,14 +63,19 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 				Month: time.December,
 				Year:  time.Now().Year(),
 			})
+			jeffGreen := models.NewPerson("Jeff", "Green", models.DoB{
+				Day:   4,
+				Month: time.December,
+				Year:  1999,
+			})
+
 			s.Before(func(t *testcase.T) {
-				people.Set(t, []models.Person{people.Get(t)[0], BolBol})
-				today.Set(t, time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC))
+				people.Set(t, []models.Person{BolBol, jeffGreen})
 			})
 
 			s.Then("they are not shorlisted to receive a Happy Birthday message.", func(t *testcase.T) {
 				t.Must.Equal(1, len(act(t)))
-				t.Must.Equal(people.Get(t)[0], act(t)[0])
+				t.Must.Equal(jeffGreen, act(t)[0])
 			})
 		})
 
@@ -76,14 +85,19 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 				Month: time.February,
 				Year:  1984,
 			})
+			jeffGreen := models.NewPerson("Jeff", "Green", models.DoB{
+				Day:   4,
+				Month: time.December,
+				Year:  1999,
+			})
+
 			s.Before(func(t *testcase.T) {
-				people.Set(t, []models.Person{people.Get(t)[0], LipYear})
 				today.Set(t, time.Date(time.Now().Year(), time.February, 28, 0, 0, 0, 0, time.UTC))
+				people.Set(t, []models.Person{jeffGreen, LipYear})
 			})
 			s.Then("receive a Happy Birthday message on Feb 28 of non leap years", func(t *testcase.T) {
-				bdayPeople := act(t)
-				t.Must.Equal(1, len(bdayPeople))
-				t.Must.Equal(LipYear.FName, bdayPeople[0].FName)
+				t.Must.Equal(1, len(act(t)))
+				t.Must.Equal(LipYear.FName, act(t)[0].FName)
 			})
 		})
 	})

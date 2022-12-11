@@ -1,4 +1,4 @@
-package src
+package domain
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func (s Service) GreetBirthday(ctx context.Context, people []models.Person, toda
 func (s *Service) addBitrhdayPeople(people []models.Person, birthday models.DoB) {
 	for _, person := range people {
 		s.regularCase(person, birthday)
-		s.LeapYearCase(person, birthday)
+		s.leapYearCase(person, birthday)
 	}
 }
 
@@ -29,7 +29,7 @@ func (s *Service) regularCase(person models.Person, birthday models.DoB) {
 	}
 }
 
-func (s *Service) LeapYearCase(person models.Person, birthday models.DoB) {
+func (s *Service) leapYearCase(person models.Person, birthday models.DoB) {
 	if s.isLeapYear(person.Dob.Year) && person.Dob.Month == time.February && person.Dob.Day == 29 && person.Dob.Year < birthday.Year {
 		if birthday.Month == time.February && birthday.Day == 28 {
 			s.BirthdayPeople = append(s.BirthdayPeople, person)
