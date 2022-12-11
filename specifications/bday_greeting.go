@@ -53,6 +53,7 @@ func (b *GreetBirthday) SendBirthdayGreetings(t *testing.T, today time.Time, peo
 
 			s.Then("they do not ", func(t *testcase.T) {
 				t.Must.Equal(1, len(act(t)))
+				t.Must.Equal(testPeople.Get(t)[0], act(t)[0])
 			})
 		})
 	})
