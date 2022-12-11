@@ -6,17 +6,18 @@ import (
 	"time"
 )
 
-type Service struct{}
+type Service struct {
+	BirthdayPeople []models.Person
+}
 
 func (s Service) GreetBirthday(ctx context.Context, people []models.Person, today time.Time) []models.Person {
-	var birthdayPeople []models.Person
 	birthday := s.timeToDoB(today)
 	for _, person := range people {
-		if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day {
-			birthdayPeople = append(birthdayPeople, person)
+		if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day && person.Dob.Year < birthday.Year {
+			s.BirthdayPeople = append(s.BirthdayPeople, person)
 		}
 	}
-	return birthdayPeople
+	return s.BirthdayPeople
 }
 
 func NewService() *Service {
