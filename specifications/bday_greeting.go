@@ -9,7 +9,7 @@ import (
 )
 
 type BirthdayGreeter interface {
-	GreetBirthday(ctx context.Context, person []models.Person, today time.Time) ([]models.Person, error)
+	GreetBirthday(ctx context.Context, person []models.Person, today time.Time) []models.Person
 }
 
 type GreetBirthday struct {
@@ -27,14 +27,15 @@ func (b *GreetBirthday) SendBirthdayGreetings(t *testing.T, today time.Time, peo
 	})
 	s.Describe(".GreetBirthday", func(s *testcase.Spec) {
 
-		act := func(t *testcase.T) ([]models.Person, error) {
+		act := func(t *testcase.T) []models.Person {
 			return b.GreetBirthday(ctx.Get(t), people, today)
 		}
 
-		s.Then("each birthday person is greeted with an Happy Birthday message", func(t *testcase.T) {
-			person, err := act(t)
-			t.Must.NoError(err)
-			t.Must.Equal(people[0], person[0])
+		s.When("people in the list have their birthday today", func(s *testcase.Spec) {
+			s.Then("they are greeted with an Happy Birthday message", func(t *testcase.T) {
+				person := act(t)
+				t.Must.Equal(people[0], person[0])
+			})
 		})
 	})
 
