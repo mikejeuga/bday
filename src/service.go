@@ -12,12 +12,29 @@ type Service struct {
 
 func (s Service) GreetBirthday(ctx context.Context, people []models.Person, today time.Time) []models.Person {
 	birthday := s.timeToDoB(today)
+	s.addBitrhdayPeople(people, birthday)
+	return s.BirthdayPeople
+}
+
+func (s *Service) addBitrhdayPeople(people []models.Person, birthday models.DoB) {
 	for _, person := range people {
-		if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day && person.Dob.Year < birthday.Year {
+		s.regularCase(person, birthday)
+		s.LeapYearCase(person, birthday)
+	}
+}
+
+func (s *Service) regularCase(person models.Person, birthday models.DoB) {
+	if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day && person.Dob.Year < birthday.Year {
+		s.BirthdayPeople = append(s.BirthdayPeople, person)
+	}
+}
+
+func (s *Service) LeapYearCase(person models.Person, birthday models.DoB) {
+	if s.isLeapYear(person.Dob.Year) && person.Dob.Month == time.February && person.Dob.Day == 29 && person.Dob.Year < birthday.Year {
+		if birthday.Month == time.February && birthday.Day == 28 {
 			s.BirthdayPeople = append(s.BirthdayPeople, person)
 		}
 	}
-	return s.BirthdayPeople
 }
 
 func NewService() *Service {
@@ -30,4 +47,8 @@ func (s *Service) timeToDoB(date time.Time) models.DoB {
 		Month: date.Month(),
 		Year:  date.Year(),
 	}
+}
+
+func (s *Service) isLeapYear(year int) bool {
+	return year%4 == 0 && year%100 != 0 || year%400 == 0
 }
