@@ -45,10 +45,10 @@ commit:
 	git push
 
 privacy:
-	@gh repo edit --visisbility=private
+	@gh repo edit --visibility=private
 
 public:
-	@gh repo edit --visisbility=public
+	@gh repo edit --visibility=public
 
 destroy:
 	rm -rf .git
