@@ -21,7 +21,7 @@ func NewServer(greeter specifications.BirthdayGreeter, out io.Writer) *http.Serv
 	server := Server{out: out, greeter: greeter}
 
 	router.HandleFunc("/", server.Home).Methods(http.MethodGet)
-	router.HandleFunc("/birthdays", server.GreetBirthdays).Methods(http.MethodPost)
+	router.HandleFunc("/people", server.GreetBirthdays).Methods(http.MethodPost)
 
 	return &http.Server{
 		Addr:    ":8082",
@@ -41,8 +41,11 @@ func (s Server) GreetBirthdays(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	birthdays := s.greeter.GreetBirthday(ctx, receivedPeople, time.Now())
-	for _, birthday := range birthdays {
-		fmt.Fprintf(s.out, fmt.Sprintf("Happy Birthday %s", birthday.FName))
+	birthdayTrue := r.URL.Query().Get("birthday")
+	if birthdayTrue == "true" {
+		birthdays := s.greeter.GreetBirthday(ctx, receivedPeople, time.Now())
+		for _, birthday := range birthdays {
+			fmt.Fprintf(s.out, fmt.Sprintf("Happy Birthday %s", birthday.FName))
+		}
 	}
 }

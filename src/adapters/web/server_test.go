@@ -42,7 +42,7 @@ func TestServer(t *testing.T) {
 		})
 	})
 
-	s.Describe(".Get '/birthdays'", func(s *testcase.Spec) {
+	s.Describe(".Get '/people?birthday=true'", func(s *testcase.Spec) {
 		var (
 			service = domain.NewService()
 			out     = &bytes.Buffer{}
@@ -78,7 +78,7 @@ func TestServer(t *testing.T) {
 		assert.NoError(t, err)
 
 		resp := httptest.NewRecorder()
-		req := httptest.NewRequest(http.MethodPost, "/birthdays", bytes.NewReader(marshal))
+		req := httptest.NewRequest(http.MethodPost, "/people?birthday=true", bytes.NewReader(marshal))
 		req.Header.Set("Content-type", "application/json")
 
 		act := func(t *testcase.T) {
