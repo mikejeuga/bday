@@ -10,6 +10,10 @@ type Service struct {
 	BirthdayPeople []models.Person
 }
 
+func NewService() *Service {
+	return &Service{}
+}
+
 func (s Service) GreetBirthday(ctx context.Context, people []models.Person, today time.Time) []models.Person {
 	birthday := s.timeToDoB(today)
 	s.addBitrhdayPeople(people, birthday)
@@ -35,10 +39,6 @@ func (s *Service) leapYearCase(person models.Person, birthday models.DoB) {
 			s.BirthdayPeople = append(s.BirthdayPeople, person)
 		}
 	}
-}
-
-func NewService() *Service {
-	return &Service{}
 }
 
 func (s *Service) timeToDoB(date time.Time) models.DoB {

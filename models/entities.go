@@ -3,11 +3,9 @@ package models
 import "time"
 
 type Person struct {
-	FName   string  `json:"firstName"`
-	LName   string  `json:"lastName"`
-	Dob     DoB     `json:"date_of_birth"`
-	Country Country `json:"country"`
-	Email   string  `json:"email"`
+	LName string `json:"lastName"`
+	FName string `json:"firstName"`
+	Dob   DoB    `json:"date_of_birth"`
 }
 
 func NewPerson(FName string, LName string, dob DoB) Person {
@@ -15,9 +13,9 @@ func NewPerson(FName string, LName string, dob DoB) Person {
 }
 
 type DoB struct {
-	Day   int
-	Month time.Month
-	Year  int
+	Year  int        `json:"year"`
+	Month time.Month `json:"month"`
+	Day   int        `json:"day"`
 }
 
 type Country string
