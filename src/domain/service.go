@@ -6,9 +6,7 @@ import (
 	"time"
 )
 
-type Service struct {
-	BirthdayPeople []models.Person
-}
+type Service struct{}
 
 func NewService() *Service {
 	return &Service{}
@@ -16,29 +14,40 @@ func NewService() *Service {
 
 func (s Service) GreetBirthday(ctx context.Context, people []models.Person, today time.Time) []models.Person {
 	birthday := s.timeToDoB(today)
-	s.addBitrhdayPeople(people, birthday)
-	return s.BirthdayPeople
+	return s.addBitrhdayPeople(people, birthday)
 }
 
-func (s *Service) addBitrhdayPeople(people []models.Person, birthday models.DoB) {
+func (s *Service) addBitrhdayPeople(people []models.Person, birthday models.DoB) []models.Person {
+	var birthdayPeople []models.Person
 	for _, person := range people {
-		s.regularCase(person, birthday)
-		s.leapYearCase(person, birthday)
-	}
-}
-
-func (s *Service) regularCase(person models.Person, birthday models.DoB) {
-	if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day && person.Dob.Year < birthday.Year {
-		s.BirthdayPeople = append(s.BirthdayPeople, person)
-	}
-}
-
-func (s *Service) leapYearCase(person models.Person, birthday models.DoB) {
-	if s.isLeapYear(person.Dob.Year) && person.Dob.Month == time.February && person.Dob.Day == 29 && person.Dob.Year < birthday.Year {
-		if birthday.Month == time.February && birthday.Day == 28 {
-			s.BirthdayPeople = append(s.BirthdayPeople, person)
+		regularCases := s.regularCase(person, birthday)
+		for _, regularCase := range regularCases {
+			birthdayPeople = append(birthdayPeople, regularCase)
+		}
+		leapYearCases := s.leapYearCase(person, birthday)
+		for _, leapYearCase := range leapYearCases {
+			birthdayPeople = append(birthdayPeople, leapYearCase)
 		}
 	}
+	return birthdayPeople
+}
+
+func (s *Service) regularCase(person models.Person, birthday models.DoB) []models.Person {
+	var birthdayPeople []models.Person
+	if person.Dob.Month == birthday.Month && person.Dob.Day == birthday.Day && person.Dob.Year < birthday.Year {
+		birthdayPeople = append(birthdayPeople, person)
+	}
+	return birthdayPeople
+}
+
+func (s *Service) leapYearCase(person models.Person, birthday models.DoB) []models.Person {
+	var leapYearPeople []models.Person
+	if s.isLeapYear(person.Dob.Year) && person.Dob.Month == time.February && person.Dob.Day == 29 && person.Dob.Year < birthday.Year {
+		if birthday.Month == time.February && birthday.Day == 28 {
+			leapYearPeople = append(leapYearPeople, person)
+		}
+	}
+	return leapYearPeople
 }
 
 func (s *Service) timeToDoB(date time.Time) models.DoB {
