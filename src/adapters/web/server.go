@@ -34,13 +34,14 @@ func (s Server) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) GreetBirthdays(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	var receivedPeople []models.Person
 	err := json.NewDecoder(r.Body).Decode(&receivedPeople)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	birthdays := s.greeter.GreetBirthday(r.Context(), receivedPeople, time.Now())
+	birthdays := s.greeter.GreetBirthday(ctx, receivedPeople, time.Now())
 	for _, birthday := range birthdays {
 		fmt.Fprintf(s.out, fmt.Sprintf("Happy Birthday %s", birthday.FName))
 	}
