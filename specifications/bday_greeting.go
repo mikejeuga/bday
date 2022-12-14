@@ -27,9 +27,8 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 		ctx = testcase.Let(s, func(t *testcase.T) context.Context {
 			return context.Background()
 		})
-		today = testcase.Let[time.Time](s, func(t *testcase.T) time.Time {
-			return time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC)
-		})
+		today = testcase.Let[time.Time](s, nil)
+
 		people = testcase.Let(s, func(t *testcase.T) []models.Person {
 			return []models.Person{}
 		})
@@ -48,6 +47,7 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 			})
 
 			s.Before(func(t *testcase.T) {
+				today.Set(t, time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC))
 				people.Set(t, []models.Person{jeffGreen})
 			})
 
@@ -70,6 +70,7 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 			})
 
 			s.Before(func(t *testcase.T) {
+				today.Set(t, time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC))
 				people.Set(t, []models.Person{BolBol, jeffGreen})
 			})
 

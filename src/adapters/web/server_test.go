@@ -85,8 +85,8 @@ func TestServer(t *testing.T) {
 			subject.Get(t).Handler.ServeHTTP(resp, req)
 		}
 
-		s.When("we call the server on '/birthdays',", func(s *testcase.Spec) {
-			s.Then("the server greeting the bdays.", func(t *testcase.T) {
+		s.When("we call the server on '/people?birthday=true',", func(s *testcase.Spec) {
+			s.Then("the server greeting the birthday.", func(t *testcase.T) {
 				act(t)
 				t.Must.Equal(http.StatusOK, resp.Code)
 				t.Must.Equal("Happy Birthday John", out.String())
