@@ -27,11 +27,8 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 		ctx = testcase.Let(s, func(t *testcase.T) context.Context {
 			return context.Background()
 		})
-		today = testcase.Let[time.Time](s, nil)
-
-		people = testcase.Let(s, func(t *testcase.T) []models.Person {
-			return []models.Person{}
-		})
+		today  = testcase.Let[time.Time](s, nil)
+		people = testcase.LetValue[[]models.Person](s, nil)
 	)
 
 	act := func(t *testcase.T) []models.Person {
