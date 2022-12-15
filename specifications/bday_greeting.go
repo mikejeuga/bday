@@ -3,6 +3,7 @@ package specifications
 import (
 	"context"
 	"github.com/adamluzsi/testcase"
+	"github.com/adamluzsi/testcase/pp"
 	"github.com/mikejeuga/bday/models"
 	"testing"
 	"time"
@@ -97,6 +98,18 @@ func (g *GreetBirthday) SendGreetings(t *testing.T) {
 				t.Must.Equal(1, len(act(t)))
 				t.Must.Equal(LipYear.FName, act(t)[0].FName)
 			})
+		})
+
+		s.When("there is no data in the people slice,", func(s *testcase.Spec) {
+			s.Before(func(t *testcase.T) {
+				today.Set(t, time.Date(time.Now().Year(), time.December, 4, 0, 0, 0, 0, time.UTC))
+				people.Set(t, []models.Person{})
+			})
+			s.Then("receive a Happy Birthday message on Feb 28 of non leap years", func(t *testcase.T) {
+				pp.PP(len(people.Get(t)))
+				t.Must.Equal(0, len(act(t)))
+			})
+
 		})
 	})
 }

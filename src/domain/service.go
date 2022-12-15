@@ -19,6 +19,9 @@ func (s Service) GreetBirthday(ctx context.Context, people []models.Person, toda
 
 func (s Service) addBitrhdayPeople(people []models.Person, birthday models.DoB) []models.Person {
 	var birthdayPeople []models.Person
+	if len(people) == 0 {
+		return []models.Person{}
+	}
 	for _, person := range people {
 		regularCases := s.regularCase(person, birthday)
 		for _, regularCase := range regularCases {

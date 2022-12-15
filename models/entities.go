@@ -8,7 +8,7 @@ type Person struct {
 	Dob   DoB    `json:"date_of_birth"`
 }
 
-func NewPerson(FName string, LName string, dob DoB) Person {
+func NewPerson(FName, LName string, dob DoB) Person {
 	return Person{FName: FName, LName: LName, Dob: dob}
 }
 
